@@ -1,0 +1,297 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		344B580A14F858B100ED410E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 344B580914F858B100ED410E /* UIKit.framework */; };
+		344B580C14F858B100ED410E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 344B580B14F858B100ED410E /* Foundation.framework */; };
+		344B580E14F858B100ED410E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 344B580D14F858B100ED410E /* CoreGraphics.framework */; };
+		344B581414F858B100ED410E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 344B581214F858B100ED410E /* InfoPlist.strings */; };
+		344B581614F858B100ED410E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 344B581514F858B100ED410E /* main.m */; };
+		344B581A14F858B100ED410E /* CardMavenAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 344B581914F858B100ED410E /* CardMavenAppDelegate.m */; };
+		344B581D14F858B100ED410E /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 344B581B14F858B100ED410E /* MainStoryboard_iPhone.storyboard */; };
+		344B582014F858B100ED410E /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 344B581E14F858B100ED410E /* MainStoryboard_iPad.storyboard */; };
+		344B582314F858B100ED410E /* CardMavenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 344B582214F858B100ED410E /* CardMavenViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		344B580514F858B100ED410E /* CardMaven.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardMaven.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		344B580914F858B100ED410E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		344B580B14F858B100ED410E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		344B580D14F858B100ED410E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		344B581114F858B100ED410E /* CardMaven-Info.plist */ = {isa = PBXFileReference; path = "CardMaven-Info.plist"; sourceTree = "<group>"; };
+		344B581314F858B100ED410E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		344B581514F858B100ED410E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		344B581714F858B100ED410E /* CardMaven-Prefix.pch */ = {isa = PBXFileReference; path = "CardMaven-Prefix.pch"; sourceTree = "<group>"; };
+		344B581814F858B100ED410E /* CardMavenAppDelegate.h */ = {isa = PBXFileReference; path = CardMavenAppDelegate.h; sourceTree = "<group>"; };
+		344B581914F858B100ED410E /* CardMavenAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardMavenAppDelegate.m; sourceTree = "<group>"; };
+		344B581C14F858B100ED410E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		344B581F14F858B100ED410E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		344B582114F858B100ED410E /* CardMavenViewController.h */ = {isa = PBXFileReference; path = CardMavenViewController.h; sourceTree = "<group>"; };
+		344B582214F858B100ED410E /* CardMavenViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardMavenViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		344B580214F858B100ED410E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				344B580A14F858B100ED410E /* UIKit.framework in Frameworks */,
+				344B580C14F858B100ED410E /* Foundation.framework in Frameworks */,
+				344B580E14F858B100ED410E /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		344B57FA14F858B100ED410E = {
+			isa = PBXGroup;
+			children = (
+				344B580F14F858B100ED410E /* CardMaven */,
+				344B580814F858B100ED410E /* Frameworks */,
+				344B580614F858B100ED410E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		344B580614F858B100ED410E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				344B580514F858B100ED410E /* CardMaven.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		344B580814F858B100ED410E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				344B580914F858B100ED410E /* UIKit.framework */,
+				344B580B14F858B100ED410E /* Foundation.framework */,
+				344B580D14F858B100ED410E /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		344B580F14F858B100ED410E /* CardMaven */ = {
+			isa = PBXGroup;
+			children = (
+				344B581814F858B100ED410E /* CardMavenAppDelegate.h */,
+				344B581914F858B100ED410E /* CardMavenAppDelegate.m */,
+				344B581B14F858B100ED410E /* MainStoryboard_iPhone.storyboard */,
+				344B581E14F858B100ED410E /* MainStoryboard_iPad.storyboard */,
+				344B582114F858B100ED410E /* CardMavenViewController.h */,
+				344B582214F858B100ED410E /* CardMavenViewController.m */,
+				344B581014F858B100ED410E /* Supporting Files */,
+			);
+			path = CardMaven;
+			sourceTree = "<group>";
+		};
+		344B581014F858B100ED410E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				344B581114F858B100ED410E /* CardMaven-Info.plist */,
+				344B581214F858B100ED410E /* InfoPlist.strings */,
+				344B581514F858B100ED410E /* main.m */,
+				344B581714F858B100ED410E /* CardMaven-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		344B580414F858B100ED410E /* CardMaven */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 344B582614F858B100ED410E /* Build configuration list for PBXNativeTarget "CardMaven" */;
+			buildPhases = (
+				344B580114F858B100ED410E /* Sources */,
+				344B580214F858B100ED410E /* Frameworks */,
+				344B580314F858B100ED410E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CardMaven;
+			productName = CardMaven;
+			productReference = 344B580514F858B100ED410E /* CardMaven.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		344B57FC14F858B100ED410E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = CardMaven;
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = CrowdFlower;
+			};
+			buildConfigurationList = 344B57FF14F858B100ED410E /* Build configuration list for PBXProject "CardMaven" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 344B57FA14F858B100ED410E;
+			productRefGroup = 344B580614F858B100ED410E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				344B580414F858B100ED410E /* CardMaven */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		344B580314F858B100ED410E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				344B581414F858B100ED410E /* InfoPlist.strings in Resources */,
+				344B581D14F858B100ED410E /* MainStoryboard_iPhone.storyboard in Resources */,
+				344B582014F858B100ED410E /* MainStoryboard_iPad.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		344B580114F858B100ED410E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				344B581614F858B100ED410E /* main.m in Sources */,
+				344B581A14F858B100ED410E /* CardMavenAppDelegate.m in Sources */,
+				344B582314F858B100ED410E /* CardMavenViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		344B581214F858B100ED410E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				344B581314F858B100ED410E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		344B581B14F858B100ED410E /* MainStoryboard_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				344B581C14F858B100ED410E /* en */,
+			);
+			name = MainStoryboard_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		344B581E14F858B100ED410E /* MainStoryboard_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				344B581F14F858B100ED410E /* en */,
+			);
+			name = MainStoryboard_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		344B582414F858B100ED410E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		344B582514F858B100ED410E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		344B582714F858B100ED410E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CardMaven/CardMaven-Prefix.pch";
+				INFOPLIST_FILE = "CardMaven/CardMaven-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		344B582814F858B100ED410E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CardMaven/CardMaven-Prefix.pch";
+				INFOPLIST_FILE = "CardMaven/CardMaven-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		344B57FF14F858B100ED410E /* Build configuration list for PBXProject "CardMaven" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				344B582414F858B100ED410E /* Debug */,
+				344B582514F858B100ED410E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		344B582614F858B100ED410E /* Build configuration list for PBXNativeTarget "CardMaven" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				344B582714F858B100ED410E /* Debug */,
+				344B582814F858B100ED410E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 344B57FC14F858B100ED410E /* Project object */;
+}
