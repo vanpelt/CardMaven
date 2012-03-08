@@ -7,11 +7,86 @@
 //
 
 #import "CardMavenAppDelegate.h"
+#import "GameStatusViewController.h"
+
+@interface CardMavenAppDelegate ()
+@property (weak, nonatomic) GameStatusViewController *gameStatus;
+@end
 
 @implementation CardMavenAppDelegate
 
 @synthesize window = _window;
+@synthesize connectionPeers = _connectionPeers;
+@synthesize connectionPicker = _connectionPicker;
+@synthesize connectionSession = _connectionSession;
+@synthesize gameStatus = _gameStatus;
 
+- (GameStatusViewController *)gameStatus
+{
+    if (!_gameStatus) {
+        _gameStatus = [[self.window.rootViewController storyboard] instantiateViewControllerWithIdentifier:@"game_status"];
+    }
+    return _gameStatus;
+}
+
+- (GKPeerPickerController *)connectionPicker
+{
+    if(!_connectionPicker) {
+        _connectionPicker = [[GKPeerPickerController alloc] init];
+        _connectionPicker.delegate = self;
+        _connectionPicker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;
+    }
+    return _connectionPicker;
+}
+
+- (NSMutableArray *)connectionPeers
+{
+    if(!_connectionPeers)
+        _connectionPeers = [[NSMutableArray alloc] init];
+    return _connectionPeers;
+}
+
+#pragma mark - GKPeerPickerControllerDelegate
+- (GKSession *)peerPickerController:(GKPeerPickerController *)picker sessionForConnectionType:(GKPeerPickerConnectionType)type {
+    // Create a session with a unique session ID - displayName:nil = Takes the iPhone Name
+    GKSession* session = [[GKSession alloc] initWithSessionID:@"com.cards.connect" displayName:nil sessionMode:GKSessionModePeer];
+    return session;
+}
+
+// Tells us that the peer was connected
+- (void)peerPickerController:(GKPeerPickerController *)picker didConnectPeer:(NSString *)peerID toSession:(GKSession *)session {
+    // Get the session and assign it locally
+    self.connectionSession = session;
+    session.delegate = self;
+    
+    [picker dismiss];
+}
+
+#pragma mark - GKSessionDelegate
+// Function to receive data when sent from peer
+- (void)receiveData:(NSData *)data fromPeer:(NSString *)peer inSession: (GKSession *)session context:(void *)context {
+    NSArray *receivedData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    //Handle the data received in the array
+    [self.gameStatus update:receivedData];
+}
+
+- (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state {
+    if (state == GKPeerStateConnected) {
+        // Add the peer to the Array
+        [self.connectionPeers addObject:peerID];
+        
+        // Used to acknowledge that we will be sending data
+        [session setDataReceiveHandler:self withContext:nil];
+        
+        //In case you need to do something else when a peer connects, do it here
+    }
+    else if (state == GKPeerStateDisconnected) {
+        [self.connectionPeers removeObject:peerID];
+        //Any processing when a peer disconnects
+    }
+}
+
+#pragma mark - UIApplicationDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
