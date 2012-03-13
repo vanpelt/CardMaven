@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		343CCDB2150696430055D7E9 /* CardMavenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CCDB1150696430055D7E9 /* CardMavenViewController.m */; };
+		343CCDB2150696430055D7E9 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CCDB1150696430055D7E9 /* GameViewController.m */; };
 		343CCDB5150697930055D7E9 /* GameStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CCDB4150697930055D7E9 /* GameStatusViewController.m */; };
 		343CCDB81507FDF30055D7E9 /* NewGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CCDB71507FDF30055D7E9 /* NewGameViewController.m */; };
 		343CCDFA150848BE0055D7E9 /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343CCDF9150848BE0055D7E9 /* InfoViewController.m */; };
@@ -92,6 +92,9 @@
 		344B58AD14F858C700ED410E /* queen_of_spades.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B586A14F858C700ED410E /* queen_of_spades.png */; };
 		344B58AE14F858C700ED410E /* queen_of_spades2.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B586B14F858C700ED410E /* queen_of_spades2.png */; };
 		344B58AF14F858C700ED410E /* red_joker.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B586C14F858C700ED410E /* red_joker.png */; };
+		34B7ECA11509792100062230 /* HeartsGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7ECA01509792100062230 /* HeartsGame.m */; };
+		34B7ECA515097AF000062230 /* PlayerOfCards.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7ECA415097AF000062230 /* PlayerOfCards.m */; };
+		34B7ECB6150AC58F00062230 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = 34B7ECB5150AC58F00062230 /* Card.m */; };
 		34F5F26415096B4200029B56 /* blackButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 34F5F24815096B4200029B56 /* blackButton.png */; };
 		34F5F26515096B4200029B56 /* blackButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 34F5F24915096B4200029B56 /* blackButton@2x.png */; };
 		34F5F26615096B4200029B56 /* blackButtonHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 34F5F24A15096B4200029B56 /* blackButtonHighlight.png */; };
@@ -123,8 +126,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		343CCDB0150696430055D7E9 /* CardMavenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardMavenViewController.h; sourceTree = "<group>"; };
-		343CCDB1150696430055D7E9 /* CardMavenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardMavenViewController.m; sourceTree = "<group>"; };
+		343CCDB0150696430055D7E9 /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
+		343CCDB1150696430055D7E9 /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
 		343CCDB3150697930055D7E9 /* GameStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameStatusViewController.h; sourceTree = "<group>"; };
 		343CCDB4150697930055D7E9 /* GameStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameStatusViewController.m; sourceTree = "<group>"; };
 		343CCDB61507FDF30055D7E9 /* NewGameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewGameViewController.h; sourceTree = "<group>"; };
@@ -220,6 +223,12 @@
 		344B586A14F858C700ED410E /* queen_of_spades.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = queen_of_spades.png; sourceTree = "<group>"; };
 		344B586B14F858C700ED410E /* queen_of_spades2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = queen_of_spades2.png; sourceTree = "<group>"; };
 		344B586C14F858C700ED410E /* red_joker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red_joker.png; sourceTree = "<group>"; };
+		34B7EC9F1509792100062230 /* HeartsGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeartsGame.h; sourceTree = "<group>"; };
+		34B7ECA01509792100062230 /* HeartsGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeartsGame.m; sourceTree = "<group>"; };
+		34B7ECA315097AF000062230 /* PlayerOfCards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerOfCards.h; sourceTree = "<group>"; };
+		34B7ECA415097AF000062230 /* PlayerOfCards.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerOfCards.m; sourceTree = "<group>"; };
+		34B7ECB4150AC58E00062230 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
+		34B7ECB5150AC58F00062230 /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Card.m; sourceTree = "<group>"; };
 		34F5F24815096B4200029B56 /* blackButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackButton.png; sourceTree = "<group>"; };
 		34F5F24915096B4200029B56 /* blackButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackButton@2x.png"; sourceTree = "<group>"; };
 		34F5F24A15096B4200029B56 /* blackButtonHighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackButtonHighlight.png; sourceTree = "<group>"; };
@@ -269,10 +278,16 @@
 		343CCE0515085BCB0055D7E9 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				34B7EC9F1509792100062230 /* HeartsGame.h */,
+				34B7ECA01509792100062230 /* HeartsGame.m */,
+				34B7ECA315097AF000062230 /* PlayerOfCards.h */,
+				34B7ECA415097AF000062230 /* PlayerOfCards.m */,
 				343CCDFB15084EAC0055D7E9 /* GameOfCards.h */,
 				343CCDFC15084EAC0055D7E9 /* GameOfCards.m */,
 				343CCE0215085B7F0055D7E9 /* HandOfCards.h */,
 				343CCE0315085B7F0055D7E9 /* HandOfCards.m */,
+				34B7ECB4150AC58E00062230 /* Card.h */,
+				34B7ECB5150AC58F00062230 /* Card.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -286,8 +301,8 @@
 				343CCDB71507FDF30055D7E9 /* NewGameViewController.m */,
 				344AD21514F9BDE80017DF0E /* HandOfCardsViewController.h */,
 				344AD21614F9BDE80017DF0E /* HandOfCardsViewController.m */,
-				343CCDB0150696430055D7E9 /* CardMavenViewController.h */,
-				343CCDB1150696430055D7E9 /* CardMavenViewController.m */,
+				343CCDB0150696430055D7E9 /* GameViewController.h */,
+				343CCDB1150696430055D7E9 /* GameViewController.m */,
 				343CCDB3150697930055D7E9 /* GameStatusViewController.h */,
 				343CCDB4150697930055D7E9 /* GameStatusViewController.m */,
 			);
@@ -632,13 +647,16 @@
 				344B581614F858B100ED410E /* main.m in Sources */,
 				344B581A14F858B100ED410E /* CardMavenAppDelegate.m in Sources */,
 				344AD21714F9BDE80017DF0E /* HandOfCardsViewController.m in Sources */,
-				343CCDB2150696430055D7E9 /* CardMavenViewController.m in Sources */,
+				343CCDB2150696430055D7E9 /* GameViewController.m in Sources */,
 				343CCDB5150697930055D7E9 /* GameStatusViewController.m in Sources */,
 				343CCDB81507FDF30055D7E9 /* NewGameViewController.m in Sources */,
 				343CCDFA150848BE0055D7E9 /* InfoViewController.m in Sources */,
 				343CCDFD15084EAC0055D7E9 /* GameOfCards.m in Sources */,
 				343CCE0415085B7F0055D7E9 /* HandOfCards.m in Sources */,
 				343CCE0C15094F740055D7E9 /* CardView.m in Sources */,
+				34B7ECA11509792100062230 /* HeartsGame.m in Sources */,
+				34B7ECA515097AF000062230 /* PlayerOfCards.m in Sources */,
+				34B7ECB6150AC58F00062230 /* Card.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
