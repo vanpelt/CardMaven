@@ -13,34 +13,70 @@
 
 @implementation GameStatusViewController
 @synthesize statusScrollView = _statusScrollView;
-@synthesize cardsOnTable = _cardsOnTable;
+static inline double RADIANS (double degrees) {return degrees * M_PI/180;}
 
-- (NSMutableDictionary *) cardsOnTable {
-    if (!_cardsOnTable)
-        _cardsOnTable = [NSMutableDictionary dictionary];
-    return _cardsOnTable;
+-(GameOfCards *)cardGame
+{
+    return ((GameViewController *)self.parentViewController).cardGame;
 }
 
-- (void)setCardsForPlayer: (NSString *) playerName cardNames:(NSArray *) cardNames
+- (void)draw
 {
-    [self.cardsOnTable setValue:cardNames forKey: playerName];
-    for (NSString *cardName in cardNames) {
-        UIImage *rawCard = [UIImage imageNamed:cardName];
+    int i = 0;
+    for (UIView *player in [self.statusScrollView subviews]) {
+        [player removeFromSuperview];
+    }
+    for (PlayerOfCards *player in self.cardGame.players) {
+        float width = 60;
+        float height = 90;
         
-        float width = rawCard.size.width / 5.75;
-        CGRect rect = CGRectMake(7, 7, width, (rawCard.size.height / 4));
-        CGImageRef imageRef = CGImageCreateWithImageInRect([rawCard CGImage], rect);
-        UIImage *img = [UIImage imageWithCGImage:imageRef scale:2 orientation:UIImageOrientationUp];
+        UIView *container = [[UIView alloc] initWithFrame: CGRectMake(5 + i * 75, 5, 70, height)];
+        container.layer.masksToBounds = YES;
+        container.layer.cornerRadius = 5;
+        container.layer.borderWidth = 1;
+        container.layer.borderColor = [[UIColor grayColor] CGColor];
+        container.backgroundColor = [UIColor whiteColor];
+        container.alpha = 0.9;
         
-        //ARC takes care of this I think...
-        //CGImageRelease(imageRef);
+        UILabel *name = [[UILabel alloc] initWithFrame:CGRectMake(5,80,70,10)];
+        name.font = [UIFont systemFontOfSize:11];
+        name.backgroundColor = [UIColor clearColor];
+        name.text = [player displayName];
         
-        UIImageView *card = [[UIImageView alloc] initWithImage:img];
-        float offset = 5 + ([self.cardsOnTable allValues].count - 1) * width;
-        card.center = CGPointMake(card.center.x + offset, card.center.y + 5);
-        card.layer.masksToBounds = YES;
-        card.layer.cornerRadius = 5;
-        [self.statusScrollView addSubview:card];
+        [container addSubview:name];
+        
+        if ([player won]) {
+            NSLog(@"HEY! %@ won!!!", player.name);
+            //__block int times  = 0;
+            container.transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(-5));
+            [UIView animateWithDuration:0.1 delay:0 options:(UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse) animations:^{
+                [UIView setAnimationRepeatCount:5.0];
+                container.transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(5));
+            } completion: ^(BOOL finished){
+                if(finished) {
+                    //container.transform = CGAffineTransformIdentity;
+                    [self.cardGame newHand];
+                    [((GameViewController *)self.parentViewController) nextMove];
+                }
+                
+            }];
+        }
+        
+        for (Card *card in player.cardsInPlay) {
+            CGRect rect = CGRectMake(7, 7, width * 1.5, height * 2);
+            UIImage *rawCard = [UIImage imageNamed:card.cardName];
+            CGImageRef imageRef = CGImageCreateWithImageInRect([rawCard CGImage], rect);
+            UIImage *img = [UIImage imageWithCGImage:imageRef scale:2.3 orientation:UIImageOrientationUp];
+            //ARC takes care of this I think...
+            //CGImageRelease(imageRef);
+            
+            UIImageView *card = [[UIImageView alloc] initWithImage:img];
+            //float offset = 5 + i * width;
+            card.center = CGPointMake(card.center.x + 15, card.center.y + 1);
+            [container addSubview:card];
+        }
+        i += 1;
+        [self.statusScrollView addSubview:container];
     }
 }
 
@@ -52,10 +88,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"Whoa! %@", self.statusScrollView);
     self.statusScrollView.contentSize = CGSizeMake(3000, 100);
-    [self setCardsForPlayer: @"cvp" cardNames: [[NSArray alloc] initWithObjects:@"ace_of_spades", nil]];
-    [self setCardsForPlayer: @"bpo" cardNames: [[NSArray alloc] initWithObjects:@"2_of_diamonds", nil]];
+    [self draw];
 }
 
 - (void)viewDidUnload

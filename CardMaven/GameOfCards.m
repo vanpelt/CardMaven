@@ -7,43 +7,178 @@
 //
 
 #import "GameOfCards.h"
+#import "time.h"
 
 @interface GameOfCards ()
+@property (strong, nonatomic) NSMutableArray *cards;
 @property (strong, readonly) NSDictionary *cardNames;
 @end
 
 @implementation GameOfCards
-@synthesize cardNames = _cardNames;
 @synthesize cards = _cards;
+@synthesize cardNames = _cardNames;
 @synthesize hands = _hands;
+@synthesize cardsPerHand = _cardsPerHand;
+@synthesize cardsPlayed =_cardsPlayed;
+@synthesize currentPlayer = _currentPlayer;
+@synthesize cardsInPlay = _cardsInPlay;
+@synthesize players = _players;
+@synthesize startOfHand = _startOfHand;
 
-- (void)deal:(NSArray *) owners
+- (GameOfCards *)init
 {
-    self.hands = [[NSMutableArray alloc] initWithCapacity:owners.count];
-    for (NSString *owner in owners) {
-        [self.hands addObject:[[HandOfCards alloc] initWithOwnerAndCards:owner cards:[self drawCardsForOwner:14]]];
-    }
+    self = [super init];
+    if(self)
+        self.startOfHand = YES;
+    return self;
 }
 
-- (NSMutableArray *)drawCardsForOwner: (int) howMany
+- (NSMutableArray *)players
 {
-    NSMutableArray *cards = [[NSMutableArray alloc] initWithCapacity:howMany];
-    for (int i = 0; i < howMany; i++) {
-        [cards addObject:[self.cards objectAtIndex:self.cards.count -1]];
-        [self.cards removeLastObject];
+    if (!_players)
+        _players = [[NSMutableArray alloc] init];
+    return _players;
+}
+
+- (NSMutableArray *)cardsInPlay
+{
+    if (!_cardsInPlay)
+        _cardsInPlay = [[NSMutableArray alloc] init];
+    return _cardsInPlay;
+}
+
+- (Card *)lastCardPlayed
+{
+    return [self.cardsInPlay lastObject];
+}
+
+- (Card *)cardLead
+{
+    if (self.cardsInPlay.count > 0)
+        return [self.cardsInPlay objectAtIndex:0];
+    else
+        return NULL; 
+}
+
+- (void)deal
+{
+    self.hands = [[NSMutableArray alloc] initWithCapacity:self.players.count];
+    for (PlayerOfCards *player in self.players) {
+        player.hand = [[HandOfCards alloc] initWithPlayerAndCards:player cards:[self drawCardsForPlayer:self.cardsPerHand]];
+        [self.hands addObject:player.hand];
     }
-    return cards;
 }
 
 - (void)shuffle
 {
-    const int n = self.cards.count;
-    for (int i = 0; i < n; i++) {
-        int j = (int) (drand48()*n);
-        if (i != j)
-            [self.cards exchangeObjectAtIndex: i
-                       withObjectAtIndex: j];
+    self.cards = [self shuffleCards:self.cards];
+}
+
+- (NSMutableArray *)shuffleCards: (NSMutableArray *)cards
+{
+    srand( time(NULL) );
+    NSMutableArray *shuffledCards = [[NSMutableArray alloc] initWithCapacity:cards.count];
+    NSMutableArray *originalCards = [cards mutableCopy];
+    int randomIndex;
+    for( int index = 0; index < cards.count; index++) {
+        randomIndex = rand() % originalCards.count;
+        [shuffledCards addObject:[originalCards objectAtIndex:randomIndex]];
+        [originalCards removeObjectAtIndex:randomIndex];
     }
+    return shuffledCards;
+}
+
+- (void)addPlayer:(PlayerOfCards *)player
+{
+    [self.players addObject:player];
+}
+
+-(void)findNextPlayer
+{
+    if (self.handComplete) {
+        self.currentPlayer = [self winner];
+    } else {
+        int i = [self.players indexOfObject:self.currentPlayer];
+        if (i == self.players.count - 1)
+            i = 0;
+        else 
+            i += 1;
+        self.currentPlayer = [self.players objectAtIndex:i];
+    }
+}
+
+-(PlayerOfCards *)winner
+{
+    return nil;
+}
+
+-(NSNumber *)scoreOfCardInPlay: (Card *) card
+{
+    return [NSNumber numberWithInt:1];
+}
+
+-(int)pointValue:(Card *)card
+{
+    return 0;
+}
+
+-(BOOL)playCardForPlayer: (Card *)card player:(PlayerOfCards *) player
+{
+    self.cardsPlayed += 1;
+    self.startOfHand = false;
+    NSLog(@"Played %@ for %@", card.cardName, player.name);
+    [player.hand play:card.cardName];
+    [self.cardsInPlay addObject:card];
+    [self findNextPlayer];
+    return YES;
+}
+
+-(Card *)playRandomCardForPlayer: (PlayerOfCards *) player
+{
+    Card *rand = [player.hand.cards objectAtIndex:0];
+    [self playCardForPlayer:rand player:player];
+    return rand;
+}
+
+- (HandOfCards *)myHand
+{
+    return [self me].hand;
+}
+
+- (PlayerOfCards *)me
+{
+    return [self.players objectAtIndex:0];
+}
+
+- (BOOL)legalMoveForPlayer:(Card *)card player:(PlayerOfCards *) player
+{
+    return YES;
+}
+
+- (BOOL)handComplete
+{
+    return NO;
+}
+
+- (void)newHand
+{
+    self.startOfHand = YES;
+    for (PlayerOfCards *player in self.players) {
+        player.cardsInPlay = nil;
+    }
+    self.cardsInPlay = nil;
+}
+
+- (NSMutableArray *)drawCardsForPlayer: (int) howMany
+{
+    NSMutableArray *cards = [[NSMutableArray alloc] initWithCapacity:howMany];
+    for (int i = 0; i < howMany; i++) {
+        //This could come back to bite...
+        Card *card = [[Card alloc] initWithCardName:[self.cards objectAtIndex:self.cards.count -1]];
+        [cards addObject:card];
+        [self.cards removeLastObject];
+    }
+    return cards;
 }
 
 - (NSMutableArray *)cards
@@ -63,7 +198,6 @@
     if(!_cardNames) {
         _cardNames  = [[NSDictionary alloc] initWithObjectsAndKeys:
                       [[NSArray alloc] initWithObjects:
-                       @"1_of_diamonds",
                        @"2_of_diamonds",
                        @"3_of_diamonds",
                        @"4_of_diamonds",
@@ -80,7 +214,6 @@
                        nil
                        ],@"diamonds", 
                    [[NSArray alloc] initWithObjects:
-                    @"1_of_clubs",
                     @"2_of_clubs",
                     @"3_of_clubs",
                     @"4_of_clubs",
@@ -96,7 +229,6 @@
                     @"ace_of_clubs",
                     nil], @"clubs",
                     [[NSArray alloc] initWithObjects:
-                     @"1_of_hearts",
                      @"2_of_hearts",
                      @"3_of_hearts",
                      @"4_of_hearts",
@@ -112,7 +244,6 @@
                      @"ace_of_hearts",
                      nil], @"hearts",
                     [[NSArray alloc] initWithObjects:
-                     @"1_of_spades",
                      @"2_of_spades",
                      @"3_of_spades",
                      @"4_of_spades",

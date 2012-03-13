@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "QuartzCore/QuartzCore.h"
+#import "GameViewController.h"
 
 @interface GameStatusViewController : UIViewController
-@property (strong, nonatomic) NSMutableDictionary *cardsOnTable;
 @property (weak, nonatomic) IBOutlet UIScrollView *statusScrollView;
 
-- (void)setCardsForPlayer: (NSString *) playerName cardNames:(NSArray *) cardNames;
+- (void)draw;
 
 - (void)update: (NSArray *) data;
+-(GameOfCards *)cardGame;
 @end

@@ -8,15 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "QuartzCore/QuartzCore.h"
-#import "GameOfCards.h"
+#import "GameViewController.h"
+#import "CardView.h"
 
 @interface HandOfCardsViewController : UIViewController <UIGestureRecognizerDelegate>
-@property (nonatomic, strong) NSMutableArray *cardNames;
+{
+    NSData *_templateCardClone;
+}
 @property (nonatomic, strong) NSMutableArray *cardViews;
 @property (nonatomic, strong) NSMutableArray *cardRotations;
-@property (nonatomic, strong) GameOfCards *cardGame;
 @property (nonatomic, strong) UIView *selectedCard;
+@property (weak, nonatomic) IBOutlet CardView *templateCard;
 
--(NSMutableArray *) drawCards;
--(void) transform: (float) rotation;
+//-(NSMutableArray *) drawCards;
+//-(void) transform: (float) rotation;
+-(GameOfCards *)cardGame;
+-(NSArray *) drawCards;
 @end

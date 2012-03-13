@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface NewGameViewController : UIViewController
-
+@property (strong, nonatomic) NSDictionary *availableGames;
 @end

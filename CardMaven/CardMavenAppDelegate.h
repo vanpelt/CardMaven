@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <GameKit/GameKit.h>
+#import "GameViewController.h"
 
 #define UIAppDelegate ((CardMavenAppDelegate *)[UIApplication sharedApplication].delegate)
 @interface CardMavenAppDelegate : UIResponder <UIApplicationDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate>
@@ -16,5 +17,6 @@
 @property (strong, nonatomic) NSMutableArray *connectionPeers;
 @property (strong, nonatomic) GKPeerPickerController *connectionPicker;
 @property (strong) GKSession *connectionSession;
+@property (weak, nonatomic) GameViewController *gameController;
 
 @end

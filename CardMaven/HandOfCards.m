@@ -11,13 +11,32 @@
 @implementation HandOfCards
 
 @synthesize cards = _cards;
-@synthesize owner = _owner;
+@synthesize player = _player;
 
--(HandOfCards *)initWithOwnerAndCards: (NSString *)owner cards:(NSMutableArray *)cards
+-(HandOfCards *)initWithPlayerAndCards: (PlayerOfCards *)player cards:(NSMutableArray *)cards
 {
     self = [super init];
+
+    [cards sortUsingSelector:@selector(compare:)];
     self.cards = cards;
-    self.owner = owner;
+    self.player = player;
     return self;
 }
+    
+-(Card *)play: (NSString *)cardName
+{
+    Card * card = [[Card alloc] initWithCardName:cardName];
+    [self.cards removeObject:card];
+    self.player.cardsInPlay = [[NSArray alloc] initWithObjects:card,nil];
+    return card;
+}
+
+-(BOOL)hasSuite: (NSString *)suite
+{
+    NSUInteger index = [self.cards indexOfObjectPassingTest:^(Card *obj,NSUInteger idx,BOOL *stop){
+        return [obj.suite isEqualToString:suite];
+    }];
+    return index != NSNotFound;
+}
+
 @end

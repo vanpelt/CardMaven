@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CardView : UIImageView
+@interface CardView : UIView
 @property (weak, nonatomic) NSString * cardName;
+@property (nonatomic) BOOL legalMove;
+@property (weak, nonatomic) UIView *mask;
+@property (weak, nonatomic) UIImageView *card;
+
+
 - (CardView *)initWithImageAndCardName:(UIImage *)image cardName:(NSString *) cardName;
 @end

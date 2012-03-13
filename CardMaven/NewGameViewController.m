@@ -7,22 +7,23 @@
 //
 
 #import "NewGameViewController.h"
-#import "CardMavenViewController.h"
+#import "GameViewController.h"
+#import "HeartsGame.h"
+#import "CardMavenAppDelegate.h"
 
 @interface NewGameViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *gamesScrollView;
-@property (strong, nonatomic) NSArray *availableGames;
 @end
 
 @implementation NewGameViewController
 @synthesize gamesScrollView = _gamesScrollView;
 @synthesize availableGames = _availableGames;
 
-- (NSArray*)availableGames
+- (NSDictionary*)availableGames
 {
     //In the future we'll pull this from NSUserDefaults
     if(!_availableGames)
-        _availableGames = [[NSArray alloc] initWithObjects:@"Hearts", nil];
+        _availableGames = [[NSDictionary alloc] initWithObjectsAndKeys: [HeartsGame class], @"Hearts", nil];
     return _availableGames;
 }
 
@@ -41,7 +42,7 @@
     UIImage *buttonImageHighlight = [[UIImage imageNamed:@"blackButtonHighlight"]
                                      resizableImageWithCapInsets:UIEdgeInsetsMake(18, 18, 18, 18)];
     self.gamesScrollView.contentSize = self.view.frame.size;
-    for (NSString *game in self.availableGames) {
+    for (NSString *game in [self.availableGames allKeys]) {
         UIButton * gameButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [gameButton setTitle:game forState:UIControlStateNormal];
         [gameButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -54,20 +55,24 @@
         gameButton.frame = CGRectMake(80.0, 30.0, 160.0, 40.0);
         [gameButton addTarget:self action:@selector(transitionToGame:) forControlEvents:UIControlEventTouchDown];
         [self.gamesScrollView addSubview:gameButton];
-    }    
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(UIButton*)sender
 {
-    NSLog(@"Here we go %@", segue.destinationViewController);
     if ([segue.identifier isEqualToString:@"game_chosen"]) {
-        [segue.destinationViewController setGame:sender.titleLabel.text];
+        [segue.destinationViewController setCardGame:[self gameFromString: sender.titleLabel.text ]];
+        UIAppDelegate.gameController = segue.destinationViewController;
     }
+}
+
+- (GameOfCards *)gameFromString: (NSString *)title
+{
+    return [[[self.availableGames objectForKey:title] alloc] init];
 }
 
 - (IBAction)transitionToGame:(id)sender
 {
-    NSLog(@"Rocking the segue");
     [self performSegueWithIdentifier:@"game_chosen" sender:sender];
 }
 

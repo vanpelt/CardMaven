@@ -8,27 +8,31 @@
 
 #import "HandOfCardsViewController.h"
 #import "CardMavenAppDelegate.h"
-#import "CardView.h"
 
 @interface HandOfCardsViewController ()
 @property (nonatomic) float rotation;
 @end
 
 @implementation HandOfCardsViewController
-@synthesize cardNames = _cardNames;
 @synthesize cardViews = _cardViews;
 @synthesize cardRotations = _cardRotations;
 @synthesize selectedCard = _selectedCard;
 @synthesize rotation = _rotation;
-@synthesize cardGame = _cardGame;
+@synthesize templateCard = _templateCard;
 
-#define CARD_SPACING 0.03
+#define CARD_SPACING 0.045
 
--(NSMutableArray *)cardViews
+-(GameOfCards *)cardGame
 {
-    if (!_cardViews)
-        _cardViews = [[NSMutableArray alloc] init];
-    return _cardViews;
+    return ((GameViewController *)self.parentViewController).cardGame;
+}
+
+//This feels dirty and wrong in so many ways, but let's me design the card in Storyboard
+-(CardView *)templateCardClone
+{
+    if (!_templateCardClone)
+        _templateCardClone = [NSKeyedArchiver archivedDataWithRootObject:self.templateCard];
+    return (CardView *)[NSKeyedUnarchiver unarchiveObjectWithData:_templateCardClone];
 }
 
 -(NSMutableArray *)cardRotations
@@ -38,22 +42,30 @@
     return _cardRotations;
 }
 
--(GameOfCards *) cardGame
+- (IBAction)cardChosen:(UIGestureRecognizer *)recognizer
 {
-    if(!_cardGame)
-        _cardGame = [[GameOfCards alloc] init];
-    return _cardGame;
-}
-
-- (IBAction)swipedUp:(UISwipeGestureRecognizer *)recognizer
-{
-    if(!self.selectedCard) {
+    CardView *cardView = (CardView *)recognizer.view;
+    if(!self.selectedCard && cardView.legalMove) {
         self.selectedCard = recognizer.view;
-        recognizer.view.layer.position = CGPointMake(285,480);
-    } else if (self.selectedCard == recognizer.view) {
-        NSArray *data = [[NSArray alloc] initWithObjects:((CardView *)recognizer.view).cardName, nil];
+        [UIView animateWithDuration:0.1 animations:^{
+            recognizer.view.layer.position = CGPointMake(285,480);
+        }];
+    } else if (self.selectedCard == cardView) {
+        self.selectedCard = nil;
+        [self.cardGame playCardForPlayer:[[Card alloc] initWithCardName:cardView.cardName] player:self.cardGame.me];
+        [[(GameViewController *)self.parentViewController gameStatus] draw];
+        [UIView animateWithDuration:0.6 animations:^{
+            recognizer.view.frame = CGRectMake(50, -800, 100, 300);
+            recognizer.view.transform = CGAffineTransformMakeRotation(4);
+        } completion:^(BOOL finished){
+            [self drawCards];
+        }];
+        
+        //Let everyone know
+        NSArray *data = [[NSArray alloc] initWithObjects:cardView.cardName, nil];
         NSData* encodedArray = [NSKeyedArchiver archivedDataWithRootObject:data];
         [UIAppDelegate.connectionSession sendDataToAllPeers:encodedArray withDataMode:GKSendDataReliable error:nil];
+        [(GameViewController *)self.parentViewController nextMove];
     }
 }
 
@@ -61,7 +73,9 @@
 {
     if (self.selectedCard == recognizer.view) {
         self.selectedCard = nil;
-        recognizer.view.layer.position = CGPointMake(285,530);
+        [UIView animateWithDuration:0.1 animations:^{
+            recognizer.view.layer.position = CGPointMake(285,530);
+        }];
     }
 }
 - (IBAction)panned:(UIPanGestureRecognizer *)recognizer {
@@ -73,30 +87,52 @@
 
 -(NSArray *) drawCards
 {
-    float rotation = -0.2;
-    for (int i = 0; i < self.cardNames.count; i++){
-        NSString *cardName = [self.cardNames objectAtIndex:i];
-        rotation += CARD_SPACING;
-        [self.cardRotations addObject: [NSNumber numberWithFloat:rotation ]];
+    self.cardViews = [[NSMutableArray alloc] init];
+    self.cardRotations = [[NSMutableArray alloc] init];
+    for (UIView *card in [self.view subviews]) {
+        [card removeFromSuperview];
+    }
+    float rotation = self.cardGame.me.hand.cards.count / 1.5 * -CARD_SPACING;
+    for (int i = 0; i < self.cardGame.me.hand.cards.count; i++){
+        Card *card = (Card *)[self.cardGame.me.hand.cards objectAtIndex:i];
+        NSString *cardName = card.cardName;
         //NSString *fileName = [cardName stringByAppendingFormat:@".png"];
-        CardView *view = [[CardView alloc] initWithImageAndCardName:[UIImage imageNamed:cardName] cardName:cardName];
+        CardView *template = [self templateCardClone];
+        
+        template.hidden = NO;
+        template.card.image = [UIImage imageNamed:cardName];
+        template.cardName = cardName;
+        //CardView *view = [[CardView alloc] initWithImageAndCardName:[UIImage imageNamed:cardName] cardName:cardName];
+        
         //view.bounds = CGRectMake(0,0,parentView.bounds.size.width, parentView.bounds.size.height);
-        view.frame = self.view.frame;
-        view.layer.anchorPoint = CGPointMake(0.75,1.0);
-        view.layer.position = CGPointMake(285,530);
-        [self.view addSubview:view];
+        //view.frame = self.view.frame;
+        template.layer.cornerRadius = 12    ;
+        template.layer.masksToBounds = YES;
+        template.layer.anchorPoint = CGPointMake(0.75,1.0);
+        template.layer.position = CGPointMake(285,530);
+        [self.view addSubview:template];
+        template.legalMove = [[self cardGame] legalMoveForPlayer:card player:[self.cardGame me]];
+        
+        if (template.legalMove && rotation < 0.1)
+            rotation += CARD_SPACING * 2.5;
+        else 
+            rotation += CARD_SPACING;
+        [self.cardRotations addObject: [NSNumber numberWithFloat:rotation ]];
         //NSLog(@"Rotating %@ to %@", cardName, [self.cardRotations objectAtIndex:i]);
-        view.transform = CGAffineTransformMakeRotation([[self.cardRotations objectAtIndex:i] floatValue]);
-        view.userInteractionEnabled = true;
+        template.transform = CGAffineTransformMakeRotation([[self.cardRotations objectAtIndex:i] floatValue]);
+        template.userInteractionEnabled = true;
         UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)];
         swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
         swipeDown.delegate = self;
-        UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)];
+        UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cardChosen:)];
         swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
         swipeUp.delegate = self;
-        [view addGestureRecognizer:swipeUp];
-        [view addGestureRecognizer:swipeDown];
-        [self.cardViews addObject:view];
+        UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cardChosen:)];
+        tapped.numberOfTapsRequired = 2;
+        [template addGestureRecognizer:tapped];
+        [template addGestureRecognizer:swipeUp];
+        [template addGestureRecognizer:swipeDown];
+        [self.cardViews addObject:template];
     }
     return self.cardViews;
 }
@@ -111,7 +147,7 @@
     for (int i = 0; i < self.cardViews.count; i++) {
         if (lastMaxed) {
             index = self.cardViews.count - 1 - i;
-            //NSString *cardName = [self.cardNames objectAtIndex:index];
+            //NSString *cardName = [self.hand.cards objectAtIndex:index];
             UIView *cardView = [self.cardViews objectAtIndex:index];
             float rotation = [[self.cardRotations objectAtIndex:index] floatValue];
             float maxed;
@@ -136,7 +172,7 @@
             [self.cardRotations replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:maxed ]];
         } else if (firstMaxed) {
             index = i;
-           // NSString *cardName = [self.cardNames objectAtIndex:index];
+           // NSString *cardName = [self.hand.cards objectAtIndex:index];
             UIView *cardView = [self.cardViews objectAtIndex:index];
             float rotation = [[self.cardRotations objectAtIndex:index] floatValue];
             float maxed;
@@ -157,12 +193,7 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];        
-    [self.cardGame shuffle];
-    [self.cardGame deal: [[NSArray alloc] initWithObjects: @"cvp", nil ]];
-    NSLog(@"Hands: %@", self.cardGame.hands);
-    self.cardNames = ((HandOfCards*)[self.cardGame.hands objectAtIndex:0]).cards;
-    
+    [super viewDidLoad];
     [self drawCards];
     [self.view addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)]];
 }
@@ -180,4 +211,8 @@
     }
 }
 
+- (void)viewDidUnload {
+    [self setTemplateCard:nil];
+    [super viewDidUnload];
+}
 @end

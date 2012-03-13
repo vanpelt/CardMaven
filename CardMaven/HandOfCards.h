@@ -7,10 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "PlayerOfCards.h"
+#import "Card.h"
+@class PlayerOfCards;
 @interface HandOfCards : NSObject
 @property (strong, nonatomic) NSMutableArray* cards;
-@property (strong, nonatomic) NSString* owner;
+@property (strong, nonatomic) PlayerOfCards* player;
 
--(HandOfCards *)initWithOwnerAndCards: (NSString *)owner cards:(NSMutableArray *)cards;
+-(HandOfCards *)initWithPlayerAndCards: (PlayerOfCards *)player cards:(NSMutableArray *)cards;
+-(Card *)play: (NSString *)cardName;
+-(BOOL)hasSuite: (NSString *)suite;
 @end
