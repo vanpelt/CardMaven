@@ -73,10 +73,8 @@
     [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Bot 2"]];
     [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Bot 3"]];
     
-    NSLog(@"Shuffling");
     [self.cardGame shuffle];
     [self.cardGame deal];
-    NSLog(@"Dealt");
     
     [self addChildViewController:self.handOfCards];
     [self.view addSubview:self.handOfCards.view];

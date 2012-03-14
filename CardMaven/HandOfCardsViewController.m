@@ -20,7 +20,7 @@
 @synthesize rotation = _rotation;
 @synthesize templateCard = _templateCard;
 
-#define CARD_SPACING 0.045
+#define CARD_SPACING 0.015
 
 -(GameOfCards *)cardGame
 {
@@ -92,7 +92,8 @@
     for (UIView *card in [self.view subviews]) {
         [card removeFromSuperview];
     }
-    float rotation = self.cardGame.me.hand.cards.count / 1.5 * -CARD_SPACING;
+    float rotation = self.cardGame.me.hand.cards.count / 1.1 * -CARD_SPACING;
+    CardView *lastCard;
     for (int i = 0; i < self.cardGame.me.hand.cards.count; i++){
         Card *card = (Card *)[self.cardGame.me.hand.cards objectAtIndex:i];
         NSString *cardName = card.cardName;
@@ -113,10 +114,11 @@
         [self.view addSubview:template];
         template.legalMove = [[self cardGame] legalMoveForPlayer:card player:[self.cardGame me]];
         
-        if (template.legalMove && rotation < 0.1)
-            rotation += CARD_SPACING * 2.5;
+        if (lastCard.legalMove && rotation < 0.3)
+            rotation += CARD_SPACING * 7;
         else 
             rotation += CARD_SPACING;
+        lastCard = template;
         [self.cardRotations addObject: [NSNumber numberWithFloat:rotation ]];
         //NSLog(@"Rotating %@ to %@", cardName, [self.cardRotations objectAtIndex:i]);
         template.transform = CGAffineTransformMakeRotation([[self.cardRotations objectAtIndex:i] floatValue]);
@@ -136,6 +138,16 @@
     }
     return self.cardViews;
 }
+
+
+-(void)fanOut: (int) index
+{
+    float newRotation;
+    UIView *cardView = [self.cardViews objectAtIndex:index];
+    float currentRotation = [[self.cardRotations objectAtIndex:index] floatValue];
+}
+
+
 //Refactor this monstrosity
 -(void) transform: (float) factor
 {
@@ -147,7 +159,6 @@
     for (int i = 0; i < self.cardViews.count; i++) {
         if (lastMaxed) {
             index = self.cardViews.count - 1 - i;
-            //NSString *cardName = [self.hand.cards objectAtIndex:index];
             UIView *cardView = [self.cardViews objectAtIndex:index];
             float rotation = [[self.cardRotations objectAtIndex:index] floatValue];
             float maxed;
@@ -157,7 +168,7 @@
                 maxed = max;
             } else if(index > 0) {
                 float prev = [[self.cardRotations objectAtIndex: index - 1] floatValue];
-                if (rotation - prev > 0.14) {
+                if (rotation - prev > 0.11) {
                     lastMaxed = YES;
                 } else {
                     lastMaxed = NO;
@@ -172,7 +183,6 @@
             [self.cardRotations replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:maxed ]];
         } else if (firstMaxed) {
             index = i;
-           // NSString *cardName = [self.hand.cards objectAtIndex:index];
             UIView *cardView = [self.cardViews objectAtIndex:index];
             float rotation = [[self.cardRotations objectAtIndex:index] floatValue];
             float maxed;

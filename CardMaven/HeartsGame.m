@@ -35,6 +35,14 @@
     return _currentPlayer;
 }
 
+-(BOOL)onlyPointsInHand: (NSMutableArray *) cards
+{
+    NSUInteger point = [cards indexOfObjectPassingTest:^BOOL(Card *card, NSUInteger idx, BOOL *stop){
+        return [self pointValue:card] == 0;
+    }];
+    return point == NSNotFound;
+}
+
 -(BOOL)legalMoveForPlayer: (Card *)card player:(PlayerOfCards *)player
 {   
     if (self.cardLead) {
@@ -46,22 +54,16 @@
         if (self.pointsTaken)
             return legal;
         else
-            //The check for points should be in a method
-            if ([self pointValue:card] > 0) {
-                NSUInteger point = [player.hand.cards indexOfObjectPassingTest:^BOOL(Card *card, NSUInteger idx, BOOL *stop){
-                    return [self pointValue:card] == 0;
-                }];
-                return point == NSNotFound;
+            //This doesn't handle the case of a hand with the queen and hearts...
+            if ([self pointValue:card] > 0 && !legal) {
+                return [self onlyPointsInHand:player.hand.cards];
             } else
                 return legal;
     } else if (self.cardsPlayed > 0) {
         if (self.pointsTaken)
             return YES;
         else if ([self pointValue:card] > 0) {
-            NSUInteger point = [player.hand.cards indexOfObjectPassingTest:^BOOL(Card *card, NSUInteger idx, BOOL *stop){
-                return [self pointValue:card] == 0;
-            }];
-            return point == NSNotFound;
+            return [self onlyPointsInHand:player.hand.cards];
         } else
             return YES;
     } else {
