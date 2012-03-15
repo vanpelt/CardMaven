@@ -20,7 +20,18 @@
 @synthesize rotation = _rotation;
 @synthesize templateCard = _templateCard;
 
-#define CARD_SPACING 0.015
+#define MIN_CARD_SPACING 0.01
+#define MAX_CARD_SPACING 0.1
+
+-(float)minRotation
+{
+    return self.cardGame.me.hand.cards.count * -MIN_CARD_SPACING * 1.5;
+}
+
+-(float)maxRotation
+{
+    return [self minRotation] * -2.8;
+}
 
 -(GameOfCards *)cardGame
 {
@@ -92,7 +103,7 @@
     for (UIView *card in [self.view subviews]) {
         [card removeFromSuperview];
     }
-    float rotation = self.cardGame.me.hand.cards.count / 1.1 * -CARD_SPACING;
+    float rotation = [self minRotation];
     CardView *lastCard;
     for (int i = 0; i < self.cardGame.me.hand.cards.count; i++){
         Card *card = (Card *)[self.cardGame.me.hand.cards objectAtIndex:i];
@@ -110,14 +121,14 @@
         template.layer.cornerRadius = 12    ;
         template.layer.masksToBounds = YES;
         template.layer.anchorPoint = CGPointMake(0.75,1.0);
-        template.layer.position = CGPointMake(285,530);
+        template.layer.position = CGPointMake(285,500);
         [self.view addSubview:template];
         template.legalMove = [[self cardGame] legalMoveForPlayer:card player:[self.cardGame me]];
         
-        if (lastCard.legalMove && rotation < 0.3)
-            rotation += CARD_SPACING * 7;
+        if (lastCard.legalMove && rotation < [self maxRotation] - (self.cardGame.me.hand.cards.count - i) * MIN_CARD_SPACING)
+            rotation += MAX_CARD_SPACING;
         else 
-            rotation += CARD_SPACING;
+            rotation += MIN_CARD_SPACING;
         lastCard = template;
         [self.cardRotations addObject: [NSNumber numberWithFloat:rotation ]];
         //NSLog(@"Rotating %@ to %@", cardName, [self.cardRotations objectAtIndex:i]);
@@ -140,64 +151,58 @@
 }
 
 
--(void)fanOut: (int) index
+-(BOOL)fanOut: (float) factor previousCardsRotation: (NSNumber *) previousCardsRotation index:(int) index
 {
-    float newRotation;
-    UIView *cardView = [self.cardViews objectAtIndex:index];
+    CardView *cardView = [self.cardViews objectAtIndex:index];
     float currentRotation = [[self.cardRotations objectAtIndex:index] floatValue];
+    float newRotation;
+    float spacing;
+    BOOL stopFanning = YES;
+    float maxPositiveRotation = [self maxRotation] - self.cardViews.count * MIN_CARD_SPACING + index * MIN_CARD_SPACING;
+    float maxNegativeRotation = [self minRotation] + (index * MIN_CARD_SPACING);
+    
+    //Ensure we let other cards fan after were MAX_CARD_SPACING apart
+    spacing = currentRotation - [previousCardsRotation floatValue];
+    if (previousCardsRotation && (spacing > MAX_CARD_SPACING || spacing < -MAX_CARD_SPACING))
+        stopFanning = NO;
+    
+    newRotation = currentRotation + factor;
+    if (factor > 0 && newRotation >= maxPositiveRotation) {
+        stopFanning = NO;
+        newRotation = maxPositiveRotation;
+    }
+    
+    if (factor < 0 && newRotation <= maxNegativeRotation) {
+        stopFanning = NO;
+        newRotation = maxNegativeRotation;
+    } 
+    
+    cardView.transform = CGAffineTransformMakeRotation(newRotation);
+    [self.cardRotations replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:newRotation ]];
+    
+    return stopFanning;
 }
 
-
-//Refactor this monstrosity
+/* This handles the fanning of a hand of cards 
+ */
 -(void) transform: (float) factor
 {
-    BOOL lastMaxed = NO;
-    BOOL firstMaxed = NO;
     int index;
-    if (factor > 0) lastMaxed = YES;
-    else firstMaxed = YES;
+    NSNumber *prev = NULL;
     for (int i = 0; i < self.cardViews.count; i++) {
-        if (lastMaxed) {
+        //Fanning to the right, we iterate from the end of the array
+        if (factor > 0) {
             index = self.cardViews.count - 1 - i;
-            UIView *cardView = [self.cardViews objectAtIndex:index];
-            float rotation = [[self.cardRotations objectAtIndex:index] floatValue];
-            float maxed;
-            float max = 0.5 - (i * CARD_SPACING);
-            if(rotation + factor >= max) {
-                lastMaxed = YES;
-                maxed = max;
-            } else if(index > 0) {
-                float prev = [[self.cardRotations objectAtIndex: index - 1] floatValue];
-                if (rotation - prev > 0.11) {
-                    lastMaxed = YES;
-                } else {
-                    lastMaxed = NO;
-                }
-                maxed = rotation + factor;
-            } else {
-                lastMaxed = NO;
-                maxed = rotation + factor;
-            }
-            cardView.transform = CGAffineTransformMakeRotation(maxed);
-            
-            [self.cardRotations replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:maxed ]];
-        } else if (firstMaxed) {
+            if(index > 0)
+                prev = [self.cardRotations objectAtIndex: index - 1];
+        //Fanning to the left,  we iterate from the beginning of the array
+        } else {
             index = i;
-            UIView *cardView = [self.cardViews objectAtIndex:index];
-            float rotation = [[self.cardRotations objectAtIndex:index] floatValue];
-            float maxed;
-            float max = -0.2 + (i * CARD_SPACING);
-            if(rotation + factor <= max) {
-                firstMaxed = YES;
-                maxed = max;
-            } else {
-                firstMaxed = NO;
-                maxed = rotation + factor;
-            }
-            cardView.transform = CGAffineTransformMakeRotation(maxed);
-            
-            [self.cardRotations replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:maxed ]];
+            if(index < self.cardRotations.count - 1)
+                prev = [self.cardRotations objectAtIndex: index + 1];
         }
+        if ([self fanOut:factor previousCardsRotation:prev index:index])
+            break;
     }
 }
 
