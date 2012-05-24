@@ -10,5 +10,4 @@
 #import "GameOfCards.h"
 
 @interface HeartsGame : GameOfCards
-@property (nonatomic) BOOL pointsTaken; 
 @end

@@ -9,7 +9,6 @@
 #import "HeartsGame.h"
 
 @implementation HeartsGame : GameOfCards
-@synthesize pointsTaken = _pointsTaken;
 @synthesize currentPlayer = _currentPlayer;
 
 - (GameOfCards *) init
@@ -51,7 +50,7 @@
             legal = [self.cardLead.suite isEqualToString:card.suite];
         else
             legal = YES;
-        if (self.pointsTaken)
+        if (self.pointsTaken > 0)
             return legal;
         else
             //This doesn't handle the case of a hand with the queen and hearts...
@@ -60,7 +59,7 @@
             } else
                 return legal;
     } else if (self.cardsPlayed > 0) {
-        if (self.pointsTaken)
+        if (self.pointsTaken > 0)
             return YES;
         else if ([self pointValue:card] > 0) {
             return [self onlyPointsInHand:player.hand.cards];
@@ -72,15 +71,16 @@
     }
 }
 
+- (void)newHand
+{
+    [self winner].score += self.pointsTaken;
+    [super newHand];
+}
+
 - (BOOL)playCardForPlayer:(Card *)card player:(PlayerOfCards *)player
 {
     if ([self legalMoveForPlayer:card player:player]) {
         BOOL played = [super playCardForPlayer:card player:player];
-        //pointsTaken should be a method that sums players points...
-        if (played && ([card.suite isEqualToString:@"hearts"] || [card.cardName isEqualToString:@"queen_of_spades"])) {
-            self.pointsTaken = YES;
-        }
-            
         return played;
     }
     return NO;
@@ -122,10 +122,19 @@
         return [NSNumber numberWithInt:0];
 }
 
+-(int) pointsTaken
+{
+    int score = 0;
+    for (Card *card in self.cardsInPlay) {
+        score += [self pointValue:card];
+    }
+    return score;
+}
+
 - (int)pointValue: (Card *)card
 {
     if ([card.suite isEqualToString:@"hearts"])
-        return card.faceValue;
+        return 1;
     else if ([card.cardName isEqualToString:@"queen_of_spades"])
         return 13;
     else 

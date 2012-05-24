@@ -14,6 +14,7 @@
 @synthesize cardsInPlay = _cardsInPlay;
 @synthesize bot = _bot;
 @synthesize game = _game;
+@synthesize score = _score;
 
 -(PlayerOfCards *) initWithGameAndName: (GameOfCards *) game name: (NSString *) name
 {

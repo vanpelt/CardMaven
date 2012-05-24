@@ -46,18 +46,23 @@
 - (void)nextMove {
     if (![self.cardGame handComplete] || [self.cardGame startOfHand]) {
         PlayerOfCards *currentPlayer = [self.cardGame currentPlayer];
-        NSLog(@"Our lucky current player is: %@ (start? %i)", currentPlayer.name, [self.cardGame startOfHand]);
         if (currentPlayer.bot) {
-            Card *card = [self.cardGame playRandomCardForPlayer:currentPlayer];
-            if (card)
-                [self nextMove];
-            else
-                NSLog(@"OMG ... %@", currentPlayer.hand.cards);                
-        } else {
+            NSLog(@"Playing random card for %@", currentPlayer.name);
+            [self.cardGame playRandomCardForPlayer:currentPlayer];
+            [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(nextMove:) userInfo:nil repeats:NO];
+            //[self nextMove];       
+        }
+        
+        if (self.cardGame.cardsInPlay.count == 1 || [self.cardGame startOfHand]) {
             [self.handOfCards drawCards];
         }
     }
     [self.gameStatus draw];
+}
+
+- (void)nextMove:(id)sender
+{
+    [self nextMove];
 }
 
 - (void)viewDidLoad
@@ -69,18 +74,20 @@
     [self.cardGame addPlayer:me];
     
     //We need to ask the current game WTF...
-    [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Bot 1"]];
-    [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Bot 2"]];
-    [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Bot 3"]];
+    [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Bob"]];
+    [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Frank"]];
+    [self.cardGame addPlayer:[[PlayerOfCards alloc] initAsBotWithGameAndName: self.cardGame name:@"Willy"]];
     
     [self.cardGame shuffle];
     [self.cardGame deal];
     
     [self addChildViewController:self.handOfCards];
+    self.handOfCards.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.handOfCards.view];
     
     [self addChildViewController:self.gameStatus];
     self.gameStatus.view.center = CGPointMake(160,620);
+    self.gameStatus.view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.gameStatus.view];
     [self.view bringSubviewToFront:self.infoButton];
     [self nextMove];
@@ -93,9 +100,27 @@
     // Release any retained subviews of the main view.
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation duration:(NSTimeInterval)duration
+{
+    if (orientation == UIInterfaceOrientationPortrait)
+        self.gameStatus.view.center = CGPointMake(240,620);
+    else
+        self.gameStatus.view.center = CGPointMake(160,460);
+
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)orientation
+{
+    [self.gameStatus draw];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    } else {
+        return YES;
+    }
 }
 
 @end

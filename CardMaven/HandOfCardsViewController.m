@@ -29,8 +29,9 @@
 }
 
 -(float)maxRotation
-{
-    return [self minRotation] * -2.8;
+{   
+    float factor = (self.interfaceOrientation == UIInterfaceOrientationPortrait ? -2.8 : -5.0);
+    return [self minRotation] * factor;
 }
 
 -(GameOfCards *)cardGame
@@ -59,7 +60,8 @@
     if(!self.selectedCard && cardView.legalMove) {
         self.selectedCard = recognizer.view;
         [UIView animateWithDuration:0.1 animations:^{
-            recognizer.view.layer.position = CGPointMake(285,480);
+            CGPoint pos = recognizer.view.layer.position;
+            recognizer.view.layer.position = CGPointMake(pos.x - 20,pos.y - 60);
         }];
     } else if (self.selectedCard == cardView) {
         self.selectedCard = nil;
@@ -69,14 +71,14 @@
             recognizer.view.frame = CGRectMake(50, -800, 100, 300);
             recognizer.view.transform = CGAffineTransformMakeRotation(4);
         } completion:^(BOOL finished){
-            [self drawCards];
+            if(finished) {
+                //Let everyone know
+                NSArray *data = [[NSArray alloc] initWithObjects:cardView.cardName, nil];
+                NSData* encodedArray = [NSKeyedArchiver archivedDataWithRootObject:data];
+                [UIAppDelegate.connectionSession sendDataToAllPeers:encodedArray withDataMode:GKSendDataReliable error:nil];
+                [(GameViewController *)self.parentViewController nextMove];
+            }
         }];
-        
-        //Let everyone know
-        NSArray *data = [[NSArray alloc] initWithObjects:cardView.cardName, nil];
-        NSData* encodedArray = [NSKeyedArchiver archivedDataWithRootObject:data];
-        [UIAppDelegate.connectionSession sendDataToAllPeers:encodedArray withDataMode:GKSendDataReliable error:nil];
-        [(GameViewController *)self.parentViewController nextMove];
     }
 }
 
@@ -85,7 +87,8 @@
     if (self.selectedCard == recognizer.view) {
         self.selectedCard = nil;
         [UIView animateWithDuration:0.1 animations:^{
-            recognizer.view.layer.position = CGPointMake(285,530);
+            CGPoint pos = recognizer.view.layer.position;
+            recognizer.view.layer.position = CGPointMake(pos.x + 20,pos.y+60);
         }];
     }
 }
@@ -100,11 +103,13 @@
 {
     self.cardViews = [[NSMutableArray alloc] init];
     self.cardRotations = [[NSMutableArray alloc] init];
+    self.selectedCard = nil;
     for (UIView *card in [self.view subviews]) {
         [card removeFromSuperview];
     }
     float rotation = [self minRotation];
     CardView *lastCard;
+    srand( time(NULL) );
     for (int i = 0; i < self.cardGame.me.hand.cards.count; i++){
         Card *card = (Card *)[self.cardGame.me.hand.cards objectAtIndex:i];
         NSString *cardName = card.cardName;
@@ -112,6 +117,7 @@
         CardView *template = [self templateCardClone];
         
         template.hidden = NO;
+        template.autoresizingMask = UIViewAutoresizingNone;
         template.card.image = [UIImage imageNamed:cardName];
         template.cardName = cardName;
         //CardView *view = [[CardView alloc] initWithImageAndCardName:[UIImage imageNamed:cardName] cardName:cardName];
@@ -121,7 +127,7 @@
         template.layer.cornerRadius = 12    ;
         template.layer.masksToBounds = YES;
         template.layer.anchorPoint = CGPointMake(0.75,1.0);
-        template.layer.position = CGPointMake(285,500);
+        template.layer.position = CGPointMake(285 + rand() % 10,500 + rand() % 10);
         [self.view addSubview:template];
         template.legalMove = [[self cardGame] legalMoveForPlayer:card player:[self.cardGame me]];
         

@@ -16,10 +16,12 @@
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSArray *cardsInPlay;
 @property (strong, nonatomic) GameOfCards *game;
+@property (nonatomic) int score;
 @property (nonatomic) BOOL bot;
 -(NSString *)play: (NSString *)cardName;
 -(PlayerOfCards *) initWithGameAndName: (GameOfCards*) game name:(NSString *) name;
 -(PlayerOfCards *) initAsBotWithGameAndName: (GameOfCards*) game name:(NSString *) name;
 -(NSString *)displayName;
 -(BOOL) won;
+
 @end
